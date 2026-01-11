@@ -1400,3 +1400,18 @@ footer span {
     border-bottom: 2pt solid #000 !important;
   }
 }
+
+/*  FIX: EXP PANEL ALWAYS VISIBLE ON DESKTOP  */
+@media (min-width: 769px) {
+  .exp-panel {
+    display: block !important;
+    width: 320px !important;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.08), var(--bg-secondary)) !important;
+    border-left: 1px solid var(--border-default) !important;
+    padding: 20px !important;
+  }
+  
+  .code-body {
+    display: flex !important;
+  }
+}
