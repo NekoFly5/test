@@ -1319,3 +1319,84 @@ footer span {
     break-inside: avoid-column !important;
   }
 }
+
+/*  PRINT WITH EXPLANATIONS  */
+@media print {
+  /* Show exp panel in print */
+  .exp-panel {
+    display: block !important;
+    width: auto !important;
+    background: #f5f5f5 !important;
+    border-left: none !important;
+    border-top: 1pt solid #ccc !important;
+    padding: 5px !important;
+    font-size: 6pt !important;
+    color: #333 !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .exp-panel h4, .exp-panel .line-badge {
+    display: none !important;
+  }
+  
+  /* Show data-exp as inline comments */
+  .code-table tr::after {
+    content: attr(data-exp);
+    display: block;
+    font-size: 5pt;
+    color: #666;
+    font-style: italic;
+    padding-left: 20px;
+    margin-top: 1px;
+  }
+  
+  /* Remove 2 column layout for clarity */
+  .container {
+    column-count: 1 !important;
+  }
+  
+  /* Better code readability */
+  .code-table {
+    font-size: 6pt !important;
+    line-height: 1.3 !important;
+  }
+  
+  .code-table .line-num {
+    font-size: 5pt !important;
+    width: 18px !important;
+  }
+  
+  /* Show category headers */
+  .category {
+    display: flex !important;
+    border-bottom: 1pt solid #000 !important;
+    margin: 10px 0 5px !important;
+    padding-bottom: 3px !important;
+  }
+  
+  .category h2 {
+    font-size: 9pt !important;
+    color: black !important;
+    background: none !important;
+    -webkit-text-fill-color: black !important;
+  }
+  
+  .category .badge {
+    background: #333 !important;
+    color: white !important;
+    font-size: 5pt !important;
+    padding: 1px 5px !important;
+  }
+  
+  /* Title for PDF */
+  .main::before {
+    content: 'TP7 Ex6 - Architecture MVC PHP' !important;
+    display: block !important;
+    font-size: 14pt !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    margin-bottom: 10px !important;
+    padding-bottom: 5px !important;
+    border-bottom: 2pt solid #000 !important;
+  }
+}
