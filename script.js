@@ -433,3 +433,79 @@ document.querySelectorAll('.sidebar a').forEach(link => {
 
 // Expose
 window.toggleMobileMenu = toggleMobileMenu;
+
+// Fullscreen code view for mobile
+function openFullscreenCode(codeBlock) {
+  if (window.innerWidth > 768) return;
+  
+  const title = codeBlock.querySelector('.code-header h3').textContent.trim();
+  const codeTable = codeBlock.querySelector('.code-table').cloneNode(true);
+  
+  // Create fullscreen modal
+  let modal = document.getElementById('fullscreen-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'fullscreen-modal';
+    modal.className = 'fullscreen-code';
+    modal.innerHTML = +
+      <div class="fullscreen-header">
+        <h3></h3>
+        <button class="fullscreen-close" onclick="closeFullscreen()"></button>
+      </div>
+      <div class="fullscreen-body"></div>
+      <div class="fullscreen-exp">
+        <h4>Explication</h4>
+        <p>Cliquez sur une ligne pour voir son explication.</p>
+      </div>
+    ;
+    document.body.appendChild(modal);
+  }
+  
+  modal.querySelector('.fullscreen-header h3').textContent = title;
+  modal.querySelector('.fullscreen-body').innerHTML = '';
+  modal.querySelector('.fullscreen-body').appendChild(codeTable);
+  
+  // Add click handlers to cloned table
+  codeTable.querySelectorAll('tr').forEach(row => {
+    row.addEventListener('click', () => {
+      codeTable.querySelectorAll('tr').forEach(r => r.classList.remove('active'));
+      row.classList.add('active');
+      const exp = row.dataset.exp || 'Pas d explication';
+      const lineNum = row.querySelector('.line-num')?.textContent || '?';
+      modal.querySelector('.fullscreen-exp').innerHTML = +
+        <h4>Ligne +lineNum+</h4>
+        <p>+exp+</p>
+      ;
+    });
+  });
+  
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFullscreen() {
+  const modal = document.getElementById('fullscreen-modal');
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+
+// Add expand buttons to code headers on mobile
+if (window.innerWidth <= 768) {
+  document.querySelectorAll('.code-header').forEach(header => {
+    if (!header.querySelector('.expand-btn')) {
+      const btn = document.createElement('button');
+      btn.className = 'expand-btn';
+      btn.textContent = 'Plein ¨¦cran';
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        openFullscreenCode(header.parentElement);
+      };
+      header.insertBefore(btn, header.querySelector('.toggle'));
+    }
+  });
+}
+
+window.openFullscreenCode = openFullscreenCode;
+window.closeFullscreen = closeFullscreen;

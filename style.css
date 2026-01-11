@@ -1092,3 +1092,126 @@ footer span {
   .category h2 { font-size: 1rem; }
   .code-table { font-size: 0.65rem; }
 }
+
+/*  MOBILE CODE IMPROVEMENTS  */
+@media (max-width: 768px) {
+  /* Code area scrollable with visible scrollbar */
+  .code-area {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+  
+  /* Scroll hint gradient */
+  .code-area::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    background: linear-gradient(to left, rgba(13, 13, 20, 0.9), transparent);
+    pointer-events: none;
+  }
+  
+  /* Keep code on single line with scroll */
+  .code-table .line-code {
+    white-space: pre !important;
+    word-break: normal !important;
+  }
+  
+  /* Bigger touch targets */
+  .code-table tr {
+    min-height: 40px;
+  }
+  
+  .code-table .line-num {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+    min-width: 40px;
+  }
+  
+  .code-table td {
+    padding: 8px 10px;
+  }
+  
+  /* Fullscreen code modal */
+  .fullscreen-code {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 300;
+    display: none;
+    flex-direction: column;
+  }
+  
+  .fullscreen-code.show {
+    display: flex;
+  }
+  
+  .fullscreen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-default);
+  }
+  
+  .fullscreen-header h3 {
+    font-size: 1rem;
+    color: var(--accent-secondary);
+  }
+  
+  .fullscreen-close {
+    background: var(--accent-primary);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
+  .fullscreen-body {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+  }
+  
+  .fullscreen-body .code-table {
+    font-size: 0.8rem;
+  }
+  
+  .fullscreen-exp {
+    background: var(--bg-secondary);
+    border-top: 2px solid var(--accent-primary);
+    padding: 15px;
+    max-height: 30vh;
+    overflow-y: auto;
+  }
+  
+  .fullscreen-exp h4 {
+    color: var(--accent-secondary);
+    margin-bottom: 8px;
+  }
+  
+  .fullscreen-exp p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  
+  /* Expand button on code header */
+  .expand-btn {
+    background: var(--accent-primary);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 10px;
+  }
+}
