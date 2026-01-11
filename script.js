@@ -410,3 +410,26 @@ window.tog = function (header) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { toggleAll, showToast };
 }
+
+// Mobile menu toggle
+function toggleMobileMenu() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  const btn = document.querySelector('.mobile-menu-btn');
+  
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+  btn.classList.toggle('active');
+}
+
+// Close mobile menu when clicking a link
+document.querySelectorAll('.sidebar a').forEach(link => {
+  link.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+      toggleMobileMenu();
+    }
+  });
+});
+
+// Expose
+window.toggleMobileMenu = toggleMobileMenu;
