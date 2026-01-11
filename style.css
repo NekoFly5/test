@@ -1215,3 +1215,107 @@ footer span {
     margin-right: 10px;
   }
 }
+
+/*  PRINT STYLES OPTIMIZED FOR 2 PAGES  */
+@media print {
+  /* Hide all non-essential elements */
+  .sidebar, .hero, .info-card, .btn-group, .exp-panel, footer, 
+  .category, .toggle, .bg-gradient, .mobile-menu-btn, 
+  .sidebar-overlay, .expand-btn, .fullscreen-code {
+    display: none !important;
+  }
+  
+  /* Reset body */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 10pt !important;
+    line-height: 1.1 !important;
+  }
+  
+  .main {
+    margin-left: 0 !important;
+  }
+  
+  .container {
+    padding: 5px !important;
+    max-width: 100% !important;
+  }
+  
+  /* Code blocks ultra compact */
+  .code-block {
+    margin: 3px 0 !important;
+    border: 0.5pt solid #999 !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+  
+  .code-block::before {
+    display: none !important;
+  }
+  
+  .code-block.collapsed .code-body {
+    display: flex !important;
+  }
+  
+  .code-header {
+    padding: 2px 5px !important;
+    background: #eee !important;
+    border-bottom: 0.5pt solid #ccc !important;
+  }
+  
+  .code-header h3 {
+    font-size: 6pt !important;
+    color: black !important;
+  }
+  
+  .code-header .file-icon {
+    width: 12px !important;
+    height: 12px !important;
+    font-size: 5pt !important;
+  }
+  
+  .code-body {
+    display: block !important;
+  }
+  
+  .code-area {
+    background: #f9f9f9 !important;
+  }
+  
+  /* Code table ultra compact */
+  .code-table {
+    font-size: 5pt !important;
+    line-height: 1.0 !important;
+    font-family: 'Courier New', monospace !important;
+  }
+  
+  .code-table td {
+    padding: 0 3px !important;
+  }
+  
+  .code-table .line-num {
+    width: 15px !important;
+    padding: 0 2px !important;
+    font-size: 4pt !important;
+    border-right: 0.5pt solid #ccc !important;
+    background: #eee !important;
+  }
+  
+  .code-table .line-code {
+    color: black !important;
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+  }
+  
+  /* Two column layout for print */
+  .container {
+    column-count: 2 !important;
+    column-gap: 10px !important;
+  }
+  
+  .code-block {
+    break-inside: avoid-column !important;
+  }
+}
