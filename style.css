@@ -1497,3 +1497,21 @@ footer span {
     display: none !important;
   }
 }
+
+/*  PRINT FIX: NO WORD WRAP  */
+@media print {
+  .code-table .line-code {
+    white-space: pre !important;
+    word-break: normal !important;
+    overflow: visible !important;
+  }
+  
+  .code-area {
+    overflow: visible !important;
+  }
+  
+  /* Smaller font to fit */
+  .code-table {
+    font-size: 4pt !important;
+  }
+}
