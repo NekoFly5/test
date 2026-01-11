@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP7 Ex6 - Code Source MVC</title>
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --bg-code: #0d1117;
+            --sidebar-bg: #010409;
+            --accent: #58a6ff;
+            --accent-2: #f78166;
+            --accent-3: #7ee787;
+            --text: #c9d1d9;
+            --text-dim: #8b949e;
+            --border: #30363d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 0 15px 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 15px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .sidebar-header p {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 5px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            padding: 0 15px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section a {
+            display: block;
+            padding: 6px 15px 6px 25px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+        }
+
+        .sidebar-section a:hover {
+            background: var(--bg-card);
+            border-left-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .sidebar-section a.active {
+            background: var(--bg-card);
+            border-left-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #238636 0%, #1f6feb 50%, #8957e5 100%);
+            padding: 50px 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #238636;
+            color: white;
+            border-color: #238636;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: #21262d;
+        }
+
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .info-box h3 {
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-box p {
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .info-box li {
+            margin: 6px 0;
+        }
+
+        .info-box strong {
+            color: var(--text);
+        }
+
+        .code-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: #21262d;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .code-header:hover {
+            background: #30363d;
+        }
+
+        .code-header h3 {
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-badge {
+            background: var(--accent);
+            color: #0d1117;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .toggle-icon {
+            transition: transform 0.2s;
+            font-size: 0.7rem;
+        }
+
+        .code-section.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .code-section.collapsed .code-content {
+            display: none;
+        }
+
+        .code-desc {
+            background: #1c2128;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        pre {
+            background: var(--bg-code);
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .category-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 40px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-title h2 {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-dim);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            font-size: 0.85rem;
+        }
+
+        @media print {
+
+            .sidebar,
+            header,
+            .info-box,
+            .btn-container,
+            .code-desc,
+            footer,
+            .category-title,
+            .toggle-icon {
+                display: none !important;
+            }
+
+            body {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .container {
+                padding: 5px;
+                max-width: 100%;
+            }
+
+            .code-section {
+                margin: 4px 0;
+                border: 1px solid #999;
+                page-break-inside: avoid;
+            }
+
+            .code-section.collapsed .code-content {
+                display: block !important;
+            }
+
+            .code-header {
+                padding: 3px 8px;
+                background: #ddd !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .code-header h3 {
+                font-size: 7pt;
+            }
+
+            pre {
+                padding: 3px 6px;
+                font-size: 6pt;
+                line-height: 1.15;
+                background: #f5f5f5 !important;
+                color: #000 !important;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>TP7 Ex6</h2>
+            <p>Architecture MVC</p>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Routeur</h3>
+            <a href="#routeur">routeur.php</a>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Configuration</h3>
+            <a href="#connexion">connexion.php</a>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Controleurs</h3>
+            <a href="#ctrl-voiture">controleurVoiture.php</a>
+            <a href="#ctrl-utilisateur">controleurUtilisateur.php</a>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Modeles</h3>
+            <a href="#model-voiture">voiture.php</a>
+            <a href="#model-utilisateur">utilisateur.php</a>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Vues Generales</h3>
+            <a href="#vue-debut">debut.php</a>
+            <a href="#vue-fin">fin.html</a>
+            <a href="#vue-menu">menu.html</a>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Vues Voiture</h3>
+            <a href="#vue-lesvoitures">lesVoitures.php</a>
+            <a href="#vue-unevoiture">uneVoiture.php</a>
+            <a href="#vue-erreur-v">erreur.php</a>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>Vues Utilisateur</h3>
+            <a href="#vue-lesutilisateurs">lesUtilisateurs.php</a>
+            <a href="#vue-unutilisateur">unUtilisateur.php</a>
+            <a href="#vue-erreur-u">erreur.php</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header>
+            <h1>Architecture MVC en PHP</h1>
+            <p>TP7 Exercice 6 - Gestion de Voitures et Utilisateurs</p>
+        </header>
+
+        <div class="container">
+
+            <div class="btn-container">
+                <button class="btn btn-primary" onclick="window.print()">Telecharger PDF</button>
+                <button class="btn btn-secondary" onclick="toggleAll(true)">Tout Deployer</button>
+                <button class="btn btn-secondary" onclick="toggleAll(false)">Tout Replier</button>
+            </div>
+
+            <div class="info-box">
+                <h3>Architecture MVC</h3>
+                <p>Le pattern <strong>Modele-Vue-Controleur</strong> separe l'application en 3 couches :</p>
+                <ul>
+                    <li><strong>Modele</strong> : gere les donnees et l'acces a la base (PDO)</li>
+                    <li><strong>Vue</strong> : affiche les donnees (templates HTML/PHP)</li>
+                    <li><strong>Controleur</strong> : orchestre Modele et Vue selon les requetes</li>
+                </ul>
+                <p style="margin-top:10px">Le <strong>Routeur</strong> est le point d'entree qui dispatch vers le bon
+                    controleur.</p>
+            </div>
+
+            <!-- ROUTEUR -->
+            <div class="category-title" id="cat-routeur">
+                <h2>Routeur</h2>
+            </div>
+
+            <div class="code-section" id="routeur">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>routeur.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Point d'entree : analyse ?controleur= et ?action= puis appelle la methode
+                        statique correspondante.</div>
+                    <pre>&lt;?php
+  require_once("config/connexion.php");
+  connexion::connect();
+
+  $tableauControleurs = ["controleurVoiture", "controleurUtilisateur"];
+    $actionParDefaut = [
+        "controleurVoiture" =&gt; "lireVoitures",
+        "controleurUtilisateur" =&gt; "lireUtilisateurs"
+    ];
+
+  $controleur = "controleurVoiture";
+    if (isset($_GET['controleur'])&amp;&amp; in_array($_GET['controleur'], $tableauControleurs)) {
+        $controleur = $_GET['controleur'];
+    }
+
+    require_once("controleur/$controleur.php");
+
+    $action = $actionParDefaut[$controleur];
+    if (isset($_GET['action'])) {
+        $action = $_GET['action'];
+    }
+    
+    $methodes = get_class_methods($controleur);
+    if (!in_array($action, $methodes)) {
+    $action = $actionParDefaut[$controleur];
+}
+$controleur::$action();
+?&gt;</pre>
+                </div>
+            </div>
+
+            <!-- CONFIG -->
+            <div class="category-title" id="cat-config">
+                <h2>Configuration</h2>
+            </div>
+
+            <div class="code-section" id="connexion">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>connexion.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Classe statique gerant la connexion PDO a MySQL avec pattern Singleton.</div>
+                    <pre>&lt;?php
+class Connexion {
+    // les attributs static caractéristiques de la connexion
+    static private $hostname = 'localhost';
+    static private $database = 'awang1'; // votre id court
+    static private $login ='awang1'; // votre id court
+    static private $password = 'R1YPkW12-eZw)KDd'; // votre mdp
+    static private $tabUTF8 = array(PDO::MYSQL_ATTR_INIT_COMMAND =&gt; "SET NAMES utf8");
+    // l'attribut static qui matérialisera la connexion
+    static private $pdo;
+    // le getter public de cet attribut
+    static public function pdo() {return self::$pdo;}
+    // la fonction static de connexion qui initialise $pdo et lance la tentative de connexion
+    static public function connect() {
+        $h = self::$hostname; $d = self::$database; $l = self::$login; $p = self::$password; $t = self::
+        $tabUTF8;
+        try {
+            self::$pdo = new PDO("mysql:host=$h;dbname=$d",$l,$p,$t);
+            self::$pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $e) {
+        
+        } 
+    } 
+}
+?&gt;</pre>
+                </div>
+            </div>
+
+            <!-- CONTROLEURS -->
+            <div class="category-title" id="cat-controleurs">
+                <h2>Controleurs</h2>
+            </div>
+
+            <div class="code-section" id="ctrl-voiture">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>controleurVoiture.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Controleur pour les voitures : lireVoiture() et lireVoitures().</div>
+                    <pre>&lt;?php
+
+require_once("modele/voiture.php");
+
+class controleurVoiture {
+
+    public static function lireVoiture() {
+        $title="Liste des voitures";
+        $i = $_GET['immatriculation'];
+        $v = voiture::getVoitureByImmat($i);
+        include("vue/debut.php");
+        include("vue/menu.html");
+        if (! $v) {
+           include("vue/voiture/erreur.php");
+        } else {
+        include("vue/voiture/uneVoiture.php");
+        }
+        include("vue/fin.html");
+    }
+
+    public static function lireVoitures() {
+        $title="Liste des voitures";
+        $mesVoiture = voiture::getAllVoitures();
+        include("vue/debut.php");
+        include("vue/menu.html");
+        include("vue/voiture/lesVoitures.php");
+        include("vue/fin.html");
+    }
+
+}
+?&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="ctrl-utilisateur">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>controleurUtilisateur.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Controleur pour les utilisateurs : lireUtilisateur() et lireUtilisateurs().
+                    </div>
+                    <pre>&lt;?php
+
+require_once("modele/utilisateur.php");
+
+class controleurUtilisateur {
+
+    public static function lireUtilisateur() {
+        $title="Liste des utilisateurs";
+        $i = $_GET['identifiant'];
+        $u = utilisateur::getUtilisateurByIdentifiant($i);
+        include("vue/debut.php");
+        include("vue/menu.html");
+        if (! $u) {
+           include("vue/utilisateur/erreur.php");
+        } else {
+        include("vue/utilisateur/unUtilisateur.php");
+        }
+        include("vue/fin.html");
+    }
+
+    public static function lireUtilisateurs() {
+        $title="Liste des utilisateurs";
+        $mesUtilisateur = utilisateur::getAllUtilisateur();
+        include("vue/debut.php");
+        include("vue/menu.html");
+        include("vue/utilisateur/lesUtilisateurs.php");
+        include("vue/fin.html");
+    }
+}
+?&gt;</pre>
+                </div>
+            </div>
+
+            <!-- MODELES -->
+            <div class="category-title" id="cat-modeles">
+                <h2>Modeles</h2>
+            </div>
+
+            <div class="code-section" id="model-voiture">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>voiture.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Classe Voiture avec getters/setters dynamiques et requetes PDO (FETCH_CLASS).
+                    </div>
+                    <pre>
+    &lt;?php
+    class voiture {
+        private string $marque;
+        private string $couleur;
+        private string $immatriculation;
+
+        public function get($attribut) {return $this-&gt;$attribut;}
+        public function set($attribut, $valeur) {$this-&gt;$attribut = $valeur;}
+
+        public function __construct(string $m = NULL,string $c = NULL,string $i = NULL) {
+            if(!is_null($m)) {
+              $this-&gt;marque = $m;
+              $this-&gt;couleur = $c;
+              $this-&gt;immatriculation = $i;
+            }
+        }
+
+        public function afficher() {
+            $chaine = "voiture $this-&gt;immatriculation, de marque $this-&gt;marque, de couleur $this-&gt;couleur";
+            return $chaine;
+        }
+        public static function getAllVoitures() {
+          $requete =  "SELECT * FROM voiture;";
+          $resultat = connexion::pdo()-&gt; query($requete);
+          $resultat-&gt;setFetchmode(PDO::FETCH_CLASS,"voiture");
+          $mesVoiture = $resultat-&gt;fetchAll();
+          return $mesVoiture;
+        }
+
+        public static function getVoitureByImmat($i) {
+          $requete =  "SELECT * FROM voiture WHERE immatriculation= :immat;";
+          $resultat = connexion::pdo()-&gt; prepare($requete);
+          $valeurs = array("immat" =&gt; $i);
+          try {
+          $resultat-&gt;execute($valeurs);
+          $resultat-&gt;setFetchmode(PDO::FETCH_CLASS,"voiture");
+          $voiture = $resultat-&gt;fetch();
+          return $voiture;
+          } catch (PDOException $e) {
+            echo $e-&gt;getMessage();
+          }
+        }
+      }
+    ?&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="model-utilisateur">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>utilisateur.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Classe Utilisateur avec 5 attributs et requetes preparees pour la securite.
+                    </div>
+                    <pre>&lt;?php
+    class utilisateur {
+        private string $login;
+        private string $mdp;
+        private string $nom;
+        private string $prenom;
+        private string $email;
+
+        public function get($attribut) {return $this-&gt;$attribut;}
+        public function set($attribut, $valeur) {$this-&gt;$attribut = $valeur;}
+
+        public function __construct(string $l = NULL,string $m = NULL,string $n = NULL, string $p = NULL, string $e = NULL) {
+            if(!is_null($l)) {
+              $this-&gt;login = $l;
+              $this-&gt;mdp = $m;
+              $this-&gt;nom = $n;
+              $this-&gt;prenom = $p;
+              $this-&gt;email = $e;
+            }
+        }
+
+        public function afficher() {
+            $chaine = "utilisateur $this-&gt;login($this-&gt;prenom $this-&gt;nom), email = $this-&gt;email";
+            return $chaine;
+        }
+        public static function getAllUtilisateur() {
+          $requete =  "SELECT * FROM utilisateur;";
+          $resultat = connexion::pdo()-&gt; query($requete);
+          $resultat-&gt;setFetchmode(PDO::FETCH_CLASS,"utilisateur");
+          $mesUtilisateur = $resultat-&gt;fetchAll();
+          return $mesUtilisateur;
+        }
+
+        public static function getUtilisateurByIdentifiant($i) {
+          $requete =  "SELECT * FROM utilisateur WHERE login = :identifiant;";
+          $resultat = connexion::pdo()-&gt; prepare($requete);
+          $valeurs = array("identifiant" =&gt; $i);
+          try {
+          $resultat-&gt;execute($valeurs);
+          $resultat-&gt;setFetchmode(PDO::FETCH_CLASS,"utilisateur");
+          $utilisateur = $resultat-&gt;fetch();
+          return $utilisateur;
+          } catch (PDOException $e) {
+            echo $e-&gt;getMessage();
+          }
+        }
+    }
+
+    ?&gt;</pre>
+                </div>
+            </div>
+
+            <!-- VUES GENERALES -->
+            <div class="category-title" id="cat-vues-gen">
+                <h2>Vues Generales</h2>
+            </div>
+
+            <div class="code-section" id="vue-debut">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>debut.php <span class="file-badge">PHP/HTML</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Template de debut : DOCTYPE, head avec CSS, ouverture body.</div>
+                    <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="fr"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;&lt;?php echo $title;?&gt;&lt;/title&gt;
+    &lt;link rel="stylesheet" href="css/styleMenu.css"&gt;
+    &lt;link rel="stylesheet" href="css/styleBoutons.css"&gt;
+    &lt;link rel="stylesheet" href="css/styleFooter.css"&gt;
+  &lt;/head&gt;
+  &lt;/html&gt;
+  &lt;body&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="vue-fin">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>fin.html <span class="file-badge">HTML</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Template de fin : fermeture body, footer, fermeture html.</div>
+                    <pre>    &lt;/body&gt;
+    &lt;footer&gt;
+
+    La fin de la page.
+
+    &lt;/footer&gt;
+&lt;/html&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="vue-menu">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>menu.html <span class="file-badge">HTML</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Navigation avec liens vers les listes voitures et utilisateurs.</div>
+                    <pre>&lt;header&gt;
+    &lt;nav&gt;
+        &lt;a href="routeur.php?controleur=controleurVoiture&amp;action=lireVoitures"&gt;liste des voitures&lt;/a&gt;
+        &lt;a href="routeur.php?controleur=controleurUtilisateur&amp;action=lireUtilisateurs"&gt;liste des utilisateurs&lt;/a&gt;
+    &lt;/nav&gt;
+&lt;header&gt;</pre>
+                </div>
+            </div>
+
+            <!-- VUES VOITURE -->
+            <div class="category-title" id="cat-vues-voiture">
+                <h2>Vues Voiture</h2>
+            </div>
+
+            <div class="code-section" id="vue-lesvoitures">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>lesVoitures.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Affiche la liste des voitures avec liens vers les details.</div>
+                    <pre>&lt;main&gt;
+&lt;?php
+foreach ($mesVoiture as $voiture) {
+
+    $immat = $voiture-&gt;get("immatriculation");
+
+    echo "&lt;p&gt; Voiture immatriculée $immat 
+            &lt;a class='bouton' 
+               href='routeur.php?controleur=controleurVoiture&amp;action=lireVoiture&amp;immatriculation=$immat'&gt;
+               détails
+            &lt;/a&gt;
+          &lt;/p&gt;";
+}
+?&gt;
+&lt;/main&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="vue-unevoiture">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>uneVoiture.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Affiche les details d'une voiture via la methode afficher().</div>
+                    <pre>&lt;main&gt;
+&lt;?php
+    echo "&lt;h2&gt;Détails de la voiture&lt;/h2&gt;";
+    echo "&lt;p&gt;".$v-&gt;afficher()."&lt;/p&gt;";
+?&gt;
+&lt;/main&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="vue-erreur-v">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>erreur.php (voiture) <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Page d'erreur si la voiture n'existe pas.</div>
+                    <pre>&lt;main&gt;
+&lt;?php
+    echo "&lt;p&gt;Oups une erreur s'est produite :(&lt;/p&gt;";
+    echo "&lt;p&gt;la voiture immatriculée ".$i." n'existe pas dans la base !&lt;/p&gt;";
+?&gt;
+&lt;/main&gt;</pre>
+                </div>
+            </div>
+
+            <!-- VUES UTILISATEUR -->
+            <div class="category-title" id="cat-vues-utilisateur">
+                <h2>Vues Utilisateur</h2>
+            </div>
+
+            <div class="code-section" id="vue-lesutilisateurs">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>lesUtilisateurs.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Affiche la liste des utilisateurs avec liens vers les details.</div>
+                    <pre>&lt;main&gt;
+&lt;?php
+foreach($mesUtilisateur as $utilisateur) {
+            $id = $utilisateur-&gt;get("login");
+
+    echo "&lt;p&gt; utilisateur $id 
+            &lt;a class='bouton' 
+               href='routeur.php?controleur=controleurUtilisateur&amp;action=lireUtilisateur&amp;identifiant=$id'&gt;
+               détails
+            &lt;/a&gt;
+          &lt;/p&gt;";
+        }
+?&gt;
+&lt;/main&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="vue-unutilisateur">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>unUtilisateur.php <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Affiche les details d'un utilisateur via la methode afficher().</div>
+                    <pre>&lt;main&gt;
+&lt;?php
+    echo "&lt;h2&gt;Détails de l'utilisateur&lt;/h2&gt;";
+    echo "&lt;p&gt;".$u-&gt;afficher()."&lt;/p&gt;";
+?&gt;
+&lt;/main&gt;</pre>
+                </div>
+            </div>
+
+            <div class="code-section" id="vue-erreur-u">
+                <div class="code-header" onclick="toggleCode(this)">
+                    <h3>erreur.php (utilisateur) <span class="file-badge">PHP</span></h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="code-content">
+                    <div class="code-desc">Page d'erreur si l'utilisateur n'existe pas.</div>
+                    <pre>&lt;main&gt;
+&lt;?php
+    echo "&lt;p&gt;Oups une erreur s'est produite :(&lt;/p&gt;";
+    echo "&lt;p&gt;l'utilisateur " .$i." n'existe pas dans la base !&lt;/p&gt;";
+?&gt;
+&lt;/main&gt;</pre>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>TP7 Exercice 6 - Architecture MVC PHP - Janvier 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleCode(header) {
+            header.parentElement.classList.toggle('collapsed');
+        }
+
+        function toggleAll(expand) {
+            document.querySelectorAll('.code-section').forEach(s => {
+                if (expand) s.classList.remove('collapsed');
+                else s.classList.add('collapsed');
+            });
+        }
+
+        // Highlight active sidebar link on scroll
+        document.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.code-section');
+            let current = '';
+            sections.forEach(section => {
+                const top = section.offsetTop - 100;
+                if (window.scrollY >= top) current = section.id;
+            });
+            document.querySelectorAll('.sidebar-section a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+            });
+        });
+
+        // Smooth scroll for sidebar links
+        document.querySelectorAll('.sidebar-section a').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const target = document.querySelector(a.getAttribute('href'));
+                if (target) {
+                    target.classList.remove('collapsed');
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP7 Ex6 - Architecture MVC</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>MVC Showcase</h1>
+            <p>TP7 Exercice 6</p>
+        </div>
+        <div class="nav-section">
+            <h3>Routeur</h3><a href="#routeur"><i class="lucide-folder"></i> routeur.php</a>
+        </div>
+        <div class="nav-section">
+            <h3>Configuration</h3><a href="#connexion"><i class="lucide-settings"></i> connexion.php</a>
+        </div>
+        <div class="nav-section">
+            <h3>Controleurs</h3>
+            <a href="#ctrl-v"><i class="lucide-joystick"></i> controleurVoiture</a>
+            <a href="#ctrl-u"><i class="lucide-joystick"></i> controleurUtilisateur</a>
+        </div>
+        <div class="nav-section">
+            <h3>Modeles</h3>
+            <a href="#mod-v"><i class="lucide-database"></i> voiture.php</a>
+            <a href="#mod-u"><i class="lucide-database"></i> utilisateur.php</a>
+        </div>
+        <div class="nav-section">
+            <h3>Vues Generales</h3>
+            <a href="#vue-d"><i class="lucide-layout"></i> debut.php</a>
+            <a href="#vue-f"><i class="lucide-layout"></i> fin.html</a>
+            <a href="#vue-m"><i class="lucide-layout"></i> menu.html</a>
+        </div>
+        <div class="nav-section">
+            <h3>Vues Voiture</h3>
+            <a href="#vv-l"><i class="lucide-car"></i> lesVoitures</a>
+            <a href="#vv-u"><i class="lucide-car"></i> uneVoiture</a>
+            <a href="#vv-e"><i class="lucide-car"></i> erreur</a>
+        </div>
+        <div class="nav-section">
+            <h3>Vues Utilisateur</h3>
+            <a href="#vu-l"><i class="lucide-user"></i> lesUtilisateurs</a>
+            <a href="#vu-u"><i class="lucide-user"></i> unUtilisateur</a>
+            <a href="#vu-e"><i class="lucide-user"></i> erreur</a>
+        </div>
+    </aside>
+
+    <div class="main">
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-badge"><i class="lucide-sparkles"></i> Interactive - 13 fichiers - Explications
+                    detaillees</span>
+                <h1>Architecture MVC</h1>
+                <p>Visualisation interactive du code source PHP avec explications ligne par ligne</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="window.print()"><i class="lucide-download"></i> Telecharger
+                    PDF</button>
+                <button class="btn btn-secondary" onclick="toggleAll(true)"><i class="lucide-folder-open"></i> Deployer
+                    tout</button>
+                <button class="btn btn-secondary" onclick="toggleAll(false)"><i class="lucide-folder-closed"></i>
+                    Replier tout</button>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="lucide-lightbulb"></i> Comment utiliser</h3>
+                <p>Cliquez sur un <strong>numero de ligne</strong> pour voir son explication dans le panneau de droite.
+                </p>
+                <ul>
+                    <li><strong>Modele</strong> : Gere les donnees et l'acces a la base de donnees (PDO)</li>
+                    <li><strong>Vue</strong> : Affiche les donnees a l'utilisateur (HTML/PHP)</li>
+                    <li><strong>Controleur</strong> : Fait le lien entre Modele et Vue</li>
+                </ul>
+            </div>
+
+            <!-- ROUTEUR -->
+            <div class="category">
+                <h2>Routeur</h2><span class="badge">Point d'entree</span>
+            </div>
+            <div class="code-block" id="routeur">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon"><i class="lucide-folder"></i></span> routeur.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture de la balise PHP - debut du script serveur">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Inclusion du fichier de connexion a la base de donnees MySQL">
+                                <td class="line-num">2</td>
+                                <td class="line-code"> require_once("config/connexion.php");</td>
+                            </tr>
+                            <tr data-exp="Appel de la methode statique connect() pour etablir la connexion PDO">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> connexion::connect();</td>
+                            </tr>
+                            <tr data-exp="Tableau whitelist des controleurs autorises (securite contre les injections)">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> $tableauControleurs = ["controleurVoiture",
+                                    "controleurUtilisateur"];</td>
+                            </tr>
+                            <tr data-exp="Tableau associatif definissant l'action par defaut pour chaque controleur">
+                                <td class="line-num">6</td>
+                                <td class="line-code"> $actionParDefaut = [</td>
+                            </tr>
+                            <tr data-exp="Action par defaut pour controleurVoiture = afficher toutes les voitures">
+                                <td class="line-num">7</td>
+                                <td class="line-code"> "controleurVoiture" =&gt; "lireVoitures",</td>
+                            </tr>
+                            <tr
+                                data-exp="Action par defaut pour controleurUtilisateur = afficher tous les utilisateurs">
+                                <td class="line-num">8</td>
+                                <td class="line-code"> "controleurUtilisateur" =&gt; "lireUtilisateurs"</td>
+                            </tr>
+                            <tr data-exp="Fermeture du tableau associatif">
+                                <td class="line-num">9</td>
+                                <td class="line-code"> ];</td>
+                            </tr>
+                            <tr data-exp="Controleur par defaut si aucun n'est specifie dans l'URL">
+                                <td class="line-num">11</td>
+                                <td class="line-code"> $controleur = "controleurVoiture";</td>
+                            </tr>
+                            <tr
+                                data-exp="Verifie si ?controleur= existe ET si sa valeur est dans la whitelist (securite!)">
+                                <td class="line-num">12</td>
+                                <td class="line-code"> if (isset($_GET['controleur'])&amp;&amp;
+                                    in_array($_GET['controleur'], $tableauControleurs)) {</td>
+                            </tr>
+                            <tr data-exp="Si le controleur est valide, on l'utilise">
+                                <td class="line-num">13</td>
+                                <td class="line-code"> $controleur = $_GET['controleur'];</td>
+                            </tr>
+                            <tr data-exp="Fermeture du bloc if">
+                                <td class="line-num">14</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Inclusion dynamique du fichier PHP du controleur selectionne">
+                                <td class="line-num">16</td>
+                                <td class="line-code"> require_once("controleur/$controleur.php");</td>
+                            </tr>
+                            <tr data-exp="Recupere l'action par defaut pour ce controleur">
+                                <td class="line-num">18</td>
+                                <td class="line-code"> $action = $actionParDefaut[$controleur];</td>
+                            </tr>
+                            <tr data-exp="Si une action est specifiee en parametre GET">
+                                <td class="line-num">19</td>
+                                <td class="line-code"> if (isset($_GET['action'])) {</td>
+                            </tr>
+                            <tr data-exp="On utilise l'action demandee">
+                                <td class="line-num">20</td>
+                                <td class="line-code"> $action = $_GET['action'];</td>
+                            </tr>
+                            <tr data-exp="Fermeture du if">
+                                <td class="line-num">21</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Recupere la liste des methodes publiques de la classe controleur">
+                                <td class="line-num">23</td>
+                                <td class="line-code"> $methodes = get_class_methods($controleur);</td>
+                            </tr>
+                            <tr
+                                data-exp="Verifie que l'action existe dans le controleur (securite contre appels invalides)">
+                                <td class="line-num">24</td>
+                                <td class="line-code"> if (!in_array($action, $methodes)) {</td>
+                            </tr>
+                            <tr data-exp="Si l'action n'existe pas, on revient a l'action par defaut">
+                                <td class="line-num">25</td>
+                                <td class="line-code"> $action = $actionParDefaut[$controleur];</td>
+                            </tr>
+                            <tr data-exp="Fermeture du if">
+                                <td class="line-num">26</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr
+                                data-exp="APPEL DYNAMIQUE : execute $controleur::$action() ex: controleurVoiture::lireVoitures()">
+                                <td class="line-num">27</td>
+                                <td class="line-code"> $controleur::$action();</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">28</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne pour voir son explication detaillee.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONNEXION -->
+            <div class="category">
+                <h2>Configuration</h2><span class="badge">Base de donnees</span>
+            </div>
+            <div class="code-block" id="connexion">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">‚öôÔ∏è</span> connexion.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr
+                                data-exp="Declaration de la classe Connexion - pattern Singleton pour une seule instance">
+                                <td class="line-num">2</td>
+                                <td class="line-code">class Connexion {</td>
+                            </tr>
+                            <tr
+                                data-exp="Attribut statique prive : adresse du serveur MySQL (localhost = meme machine)">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> static private $hostname = 'localhost';</td>
+                            </tr>
+                            <tr data-exp="Nom de la base de donnees a utiliser">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> static private $database = 'awang1';</td>
+                            </tr>
+                            <tr data-exp="Identifiant de connexion MySQL">
+                                <td class="line-num">6</td>
+                                <td class="line-code"> static private $login = 'awang1';</td>
+                            </tr>
+                            <tr
+                                data-exp="Mot de passe MySQL (ATTENTION: en production, utiliser des variables d'environnement!)">
+                                <td class="line-num">7</td>
+                                <td class="line-code"> static private $password = 'R1YPkW12-eZw)KDd';</td>
+                            </tr>
+                            <tr data-exp="Options PDO : force l'encodage UTF-8 pour les caracteres speciaux">
+                                <td class="line-num">8</td>
+                                <td class="line-code"> static private $tabUTF8 = array(PDO::MYSQL_ATTR_INIT_COMMAND
+                                    =&gt; "SET NAMES utf8");</td>
+                            </tr>
+                            <tr data-exp="Attribut qui stockera l'instance PDO de connexion">
+                                <td class="line-num">10</td>
+                                <td class="line-code"> static private $pdo;</td>
+                            </tr>
+                            <tr
+                                data-exp="Getter statique public : permet d'acceder a $pdo depuis partout via Connexion::pdo()">
+                                <td class="line-num">12</td>
+                                <td class="line-code"> static public function pdo() {return self::$pdo;}</td>
+                            </tr>
+                            <tr
+                                data-exp="Methode statique de connexion - initialise $pdo avec une nouvelle instance PDO">
+                                <td class="line-num">14</td>
+                                <td class="line-code"> static public function connect() {</td>
+                            </tr>
+                            <tr data-exp="Variables locales pour rendre le code PDO plus lisible">
+                                <td class="line-num">15</td>
+                                <td class="line-code"> $h = self::$hostname; $d = self::$database; $l = self::$login; $p
+                                    = self::$password; $t = self::$tabUTF8;</td>
+                            </tr>
+                            <tr data-exp="Bloc try : tente la connexion et attrape les erreurs">
+                                <td class="line-num">17</td>
+                                <td class="line-code"> try {</td>
+                            </tr>
+                            <tr data-exp="Creation de l'objet PDO avec le DSN MySQL (Data Source Name)">
+                                <td class="line-num">18</td>
+                                <td class="line-code"> self::$pdo = new PDO('mysql:host='.$h.';dbname='.$d, $l, $p, $t);
+                                </td>
+                            </tr>
+                            <tr data-exp="Active le mode exception : PDO lancera des exceptions en cas d'erreur SQL">
+                                <td class="line-num">19</td>
+                                <td class="line-code"> self::$pdo-&gt;setAttribute(PDO::ATTR_ERRMODE,
+                                    PDO::ERRMODE_EXCEPTION);</td>
+                            </tr>
+                            <tr data-exp="Bloc catch : attrape les exceptions PDO si la connexion echoue">
+                                <td class="line-num">20</td>
+                                <td class="line-code"> } catch(PDOException $e) {</td>
+                            </tr>
+                            <tr data-exp="Bloc vide : en production, logger l'erreur ou afficher un message">
+                                <td class="line-num">21</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture de la fonction connect()">
+                                <td class="line-num">23</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture de la classe Connexion">
+                                <td class="line-num">24</td>
+                                <td class="line-code">}</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">25</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTROLEURS -->
+            <div class="category">
+                <h2>Controleurs</h2><span class="badge">Logique applicative</span>
+            </div>
+
+            <div class="code-block" id="ctrl-v">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üéÆ</span> controleurVoiture.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Inclusion du modele Voiture pour acceder aux methodes d'acces BDD">
+                                <td class="line-num">3</td>
+                                <td class="line-code">require_once("modele/voiture.php");</td>
+                            </tr>
+                            <tr data-exp="Declaration de la classe controleur avec methodes statiques">
+                                <td class="line-num">5</td>
+                                <td class="line-code">class controleurVoiture {</td>
+                            </tr>
+                            <tr data-exp="Methode statique pour afficher les details d'UNE voiture">
+                                <td class="line-num">7</td>
+                                <td class="line-code"> public static function lireVoiture() {</td>
+                            </tr>
+                            <tr data-exp="Variable $title utilisee dans debut.php pour le titre de la page">
+                                <td class="line-num">8</td>
+                                <td class="line-code"> $title="Liste des voitures";</td>
+                            </tr>
+                            <tr data-exp="Recupere l'immatriculation depuis l'URL (?immatriculation=XXX)">
+                                <td class="line-num">9</td>
+                                <td class="line-code"> $i = $_GET['immatriculation'];</td>
+                            </tr>
+                            <tr data-exp="Appelle le modele pour chercher la voiture en BDD par immatriculation">
+                                <td class="line-num">10</td>
+                                <td class="line-code"> $v = voiture::getVoitureByImmat($i);</td>
+                            </tr>
+                            <tr data-exp="Inclut le template de debut (HTML header, head, body)">
+                                <td class="line-num">11</td>
+                                <td class="line-code"> include("vue/debut.php");</td>
+                            </tr>
+                            <tr data-exp="Inclut le menu de navigation">
+                                <td class="line-num">12</td>
+                                <td class="line-code"> include("vue/menu.html");</td>
+                            </tr>
+                            <tr data-exp="Condition : si la voiture n'existe pas ($v est false)">
+                                <td class="line-num">13</td>
+                                <td class="line-code"> if (! $v) {</td>
+                            </tr>
+                            <tr data-exp="Affiche la page d'erreur 'voiture non trouvee'">
+                                <td class="line-num">14</td>
+                                <td class="line-code"> include("vue/voiture/erreur.php");</td>
+                            </tr>
+                            <tr data-exp="Sinon (la voiture existe)">
+                                <td class="line-num">15</td>
+                                <td class="line-code"> } else {</td>
+                            </tr>
+                            <tr data-exp="Affiche les details de la voiture">
+                                <td class="line-num">16</td>
+                                <td class="line-code"> include("vue/voiture/uneVoiture.php");</td>
+                            </tr>
+                            <tr data-exp="Fermeture du if/else">
+                                <td class="line-num">17</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Inclut le footer HTML">
+                                <td class="line-num">18</td>
+                                <td class="line-code"> include("vue/fin.html");</td>
+                            </tr>
+                            <tr data-exp="Fermeture de la fonction lireVoiture()">
+                                <td class="line-num">19</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Methode statique pour afficher TOUTES les voitures">
+                                <td class="line-num">21</td>
+                                <td class="line-code"> public static function lireVoitures() {</td>
+                            </tr>
+                            <tr data-exp="Titre de la page">
+                                <td class="line-num">22</td>
+                                <td class="line-code"> $title="Liste des voitures";</td>
+                            </tr>
+                            <tr data-exp="Recupere toutes les voitures depuis la BDD via le modele">
+                                <td class="line-num">23</td>
+                                <td class="line-code"> $mesVoiture = voiture::getAllVoitures();</td>
+                            </tr>
+                            <tr data-exp="Debut du HTML">
+                                <td class="line-num">24</td>
+                                <td class="line-code"> include("vue/debut.php");</td>
+                            </tr>
+                            <tr data-exp="Menu de navigation">
+                                <td class="line-num">25</td>
+                                <td class="line-code"> include("vue/menu.html");</td>
+                            </tr>
+                            <tr data-exp="Vue qui affiche la liste des voitures">
+                                <td class="line-num">26</td>
+                                <td class="line-code"> include("vue/voiture/lesVoitures.php");</td>
+                            </tr>
+                            <tr data-exp="Fin du HTML">
+                                <td class="line-num">27</td>
+                                <td class="line-code"> include("vue/fin.html");</td>
+                            </tr>
+                            <tr data-exp="Fermeture de lireVoitures()">
+                                <td class="line-num">28</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture de la classe">
+                                <td class="line-num">30</td>
+                                <td class="line-code">}</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">31</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="ctrl-u">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üéÆ</span> controleurUtilisateur.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Inclusion du modele Utilisateur">
+                                <td class="line-num">3</td>
+                                <td class="line-code">require_once("modele/utilisateur.php");</td>
+                            </tr>
+                            <tr data-exp="Declaration de la classe controleur">
+                                <td class="line-num">5</td>
+                                <td class="line-code">class controleurUtilisateur {</td>
+                            </tr>
+                            <tr data-exp="Methode pour afficher UN utilisateur">
+                                <td class="line-num">7</td>
+                                <td class="line-code"> public static function lireUtilisateur() {</td>
+                            </tr>
+                            <tr data-exp="Titre de la page">
+                                <td class="line-num">8</td>
+                                <td class="line-code"> $title="Liste des utilisateurs";</td>
+                            </tr>
+                            <tr data-exp="Recupere l'identifiant depuis l'URL">
+                                <td class="line-num">9</td>
+                                <td class="line-code"> $i = $_GET['identifiant'];</td>
+                            </tr>
+                            <tr data-exp="Cherche l'utilisateur en BDD via le modele">
+                                <td class="line-num">10</td>
+                                <td class="line-code"> $u = utilisateur::getUtilisateurByIdentifiant($i);</td>
+                            </tr>
+                            <tr data-exp="Include header">
+                                <td class="line-num">11</td>
+                                <td class="line-code"> include("vue/debut.php");</td>
+                            </tr>
+                            <tr data-exp="Include menu">
+                                <td class="line-num">12</td>
+                                <td class="line-code"> include("vue/menu.html");</td>
+                            </tr>
+                            <tr data-exp="Si utilisateur non trouve">
+                                <td class="line-num">13</td>
+                                <td class="line-code"> if (! $u) {</td>
+                            </tr>
+                            <tr data-exp="Affiche erreur">
+                                <td class="line-num">14</td>
+                                <td class="line-code"> include("vue/utilisateur/erreur.php");</td>
+                            </tr>
+                            <tr data-exp="Sinon">
+                                <td class="line-num">15</td>
+                                <td class="line-code"> } else {</td>
+                            </tr>
+                            <tr data-exp="Affiche les details">
+                                <td class="line-num">16</td>
+                                <td class="line-code"> include("vue/utilisateur/unUtilisateur.php");</td>
+                            </tr>
+                            <tr data-exp="Fermeture if/else">
+                                <td class="line-num">17</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Include footer">
+                                <td class="line-num">18</td>
+                                <td class="line-code"> include("vue/fin.html");</td>
+                            </tr>
+                            <tr data-exp="Fermeture fonction">
+                                <td class="line-num">19</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Methode pour TOUS les utilisateurs">
+                                <td class="line-num">21</td>
+                                <td class="line-code"> public static function lireUtilisateurs() {</td>
+                            </tr>
+                            <tr data-exp="Titre">
+                                <td class="line-num">22</td>
+                                <td class="line-code"> $title="Liste des utilisateurs";</td>
+                            </tr>
+                            <tr data-exp="Recupere tous les utilisateurs">
+                                <td class="line-num">23</td>
+                                <td class="line-code"> $mesUtilisateur = utilisateur::getAllUtilisateur();</td>
+                            </tr>
+                            <tr data-exp="Header">
+                                <td class="line-num">24</td>
+                                <td class="line-code"> include("vue/debut.php");</td>
+                            </tr>
+                            <tr data-exp="Menu">
+                                <td class="line-num">25</td>
+                                <td class="line-code"> include("vue/menu.html");</td>
+                            </tr>
+                            <tr data-exp="Vue liste">
+                                <td class="line-num">26</td>
+                                <td class="line-code"> include("vue/utilisateur/lesUtilisateurs.php");</td>
+                            </tr>
+                            <tr data-exp="Footer">
+                                <td class="line-num">27</td>
+                                <td class="line-code"> include("vue/fin.html");</td>
+                            </tr>
+                            <tr data-exp="Fermeture fonction">
+                                <td class="line-num">28</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture classe">
+                                <td class="line-num">29</td>
+                                <td class="line-code">}</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">30</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODELES -->
+            <div class="category">
+                <h2>Modeles</h2><span class="badge">Acces donnees</span>
+            </div>
+
+            <div class="code-block" id="mod-v">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üìä</span> voiture.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Declaration de la classe voiture - represente une entite de la BDD">
+                                <td class="line-num">2</td>
+                                <td class="line-code">class voiture {</td>
+                            </tr>
+                            <tr data-exp="Attribut prive : marque de la voiture (type string)">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> private string $marque;</td>
+                            </tr>
+                            <tr data-exp="Attribut prive : couleur de la voiture">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> private string $couleur;</td>
+                            </tr>
+                            <tr data-exp="Attribut prive : immatriculation (cle primaire)">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> private string $immatriculation;</td>
+                            </tr>
+                            <tr data-exp="Getter dynamique : retourne la valeur de l'attribut demande">
+                                <td class="line-num">7</td>
+                                <td class="line-code"> public function get($attribut) {return $this-&gt;$attribut;}</td>
+                            </tr>
+                            <tr data-exp="Setter dynamique : modifie la valeur de l'attribut">
+                                <td class="line-num">8</td>
+                                <td class="line-code"> public function set($attribut, $valeur) {$this-&gt;$attribut =
+                                    $valeur;}</td>
+                            </tr>
+                            <tr data-exp="Constructeur : initialise les attributs si des valeurs sont passees">
+                                <td class="line-num">10</td>
+                                <td class="line-code"> public function __construct(string $m = NULL, string $c = NULL,
+                                    string $i = NULL) {</td>
+                            </tr>
+                            <tr data-exp="Verifie que la marque n'est pas null avant d'initialiser">
+                                <td class="line-num">11</td>
+                                <td class="line-code"> if(!is_null($m)) {</td>
+                            </tr>
+                            <tr data-exp="Initialise la marque">
+                                <td class="line-num">12</td>
+                                <td class="line-code"> $this-&gt;marque = $m;</td>
+                            </tr>
+                            <tr data-exp="Initialise la couleur">
+                                <td class="line-num">13</td>
+                                <td class="line-code"> $this-&gt;couleur = $c;</td>
+                            </tr>
+                            <tr data-exp="Initialise l'immatriculation">
+                                <td class="line-num">14</td>
+                                <td class="line-code"> $this-&gt;immatriculation = $i;</td>
+                            </tr>
+                            <tr data-exp="Fermeture du if">
+                                <td class="line-num">15</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture du constructeur">
+                                <td class="line-num">16</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Methode pour formater l'affichage de la voiture">
+                                <td class="line-num">18</td>
+                                <td class="line-code"> public function afficher() {</td>
+                            </tr>
+                            <tr data-exp="Retourne une chaine formatee avec les infos de la voiture">
+                                <td class="line-num">19</td>
+                                <td class="line-code"> return "voiture $this-&gt;immatriculation, marque
+                                    $this-&gt;marque, couleur $this-&gt;couleur";</td>
+                            </tr>
+                            <tr data-exp="Fermeture de afficher()">
+                                <td class="line-num">20</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Methode statique : recupere TOUTES les voitures de la BDD">
+                                <td class="line-num">22</td>
+                                <td class="line-code"> public static function getAllVoitures() {</td>
+                            </tr>
+                            <tr data-exp="Requete SQL SELECT * pour tout recuperer">
+                                <td class="line-num">23</td>
+                                <td class="line-code"> $requete = "SELECT * FROM voiture;";</td>
+                            </tr>
+                            <tr data-exp="Execute la requete via PDO et stocke le resultat">
+                                <td class="line-num">24</td>
+                                <td class="line-code"> $resultat = connexion::pdo()-&gt;query($requete);</td>
+                            </tr>
+                            <tr data-exp="Configure PDO pour retourner des objets 'voiture' au lieu de tableaux">
+                                <td class="line-num">25</td>
+                                <td class="line-code"> $resultat-&gt;setFetchmode(PDO::FETCH_CLASS, "voiture");</td>
+                            </tr>
+                            <tr data-exp="Recupere toutes les lignes comme tableau d'objets voiture">
+                                <td class="line-num">26</td>
+                                <td class="line-code"> return $resultat-&gt;fetchAll();</td>
+                            </tr>
+                            <tr data-exp="Fermeture de getAllVoitures()">
+                                <td class="line-num">27</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Methode statique : cherche UNE voiture par immatriculation">
+                                <td class="line-num">29</td>
+                                <td class="line-code"> public static function getVoitureByImmat($i) {</td>
+                            </tr>
+                            <tr data-exp="Requete preparee avec placeholder :immat (securite contre SQL injection)">
+                                <td class="line-num">30</td>
+                                <td class="line-code"> $requete = "SELECT * FROM voiture WHERE immatriculation =
+                                    :immat;";</td>
+                            </tr>
+                            <tr data-exp="Prepare la requete (compilation cote serveur)">
+                                <td class="line-num">31</td>
+                                <td class="line-code"> $resultat = connexion::pdo()-&gt;prepare($requete);</td>
+                            </tr>
+                            <tr data-exp="Tableau associatif liant le placeholder a la valeur">
+                                <td class="line-num">32</td>
+                                <td class="line-code"> $valeurs = array("immat" =&gt; $i);</td>
+                            </tr>
+                            <tr data-exp="Bloc try pour gerer les erreurs d'execution">
+                                <td class="line-num">33</td>
+                                <td class="line-code"> try {</td>
+                            </tr>
+                            <tr data-exp="Execute la requete avec les valeurs">
+                                <td class="line-num">34</td>
+                                <td class="line-code"> $resultat-&gt;execute($valeurs);</td>
+                            </tr>
+                            <tr data-exp="Mode FETCH_CLASS pour retourner un objet voiture">
+                                <td class="line-num">35</td>
+                                <td class="line-code"> $resultat-&gt;setFetchmode(PDO::FETCH_CLASS, "voiture");</td>
+                            </tr>
+                            <tr data-exp="Retourne le premier (et seul) resultat ou false si non trouve">
+                                <td class="line-num">36</td>
+                                <td class="line-code"> return $resultat-&gt;fetch();</td>
+                            </tr>
+                            <tr data-exp="Attrape les exceptions PDO">
+                                <td class="line-num">37</td>
+                                <td class="line-code"> } catch (PDOException $e) {</td>
+                            </tr>
+                            <tr data-exp="Affiche le message d'erreur">
+                                <td class="line-num">38</td>
+                                <td class="line-code"> echo $e-&gt;getMessage();</td>
+                            </tr>
+                            <tr data-exp="Fermeture catch">
+                                <td class="line-num">39</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture de getVoitureByImmat()">
+                                <td class="line-num">40</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture de la classe voiture">
+                                <td class="line-num">41</td>
+                                <td class="line-code">}</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">42</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="mod-u">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üìä</span> utilisateur.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Declaration de la classe utilisateur">
+                                <td class="line-num">2</td>
+                                <td class="line-code">class utilisateur {</td>
+                            </tr>
+                            <tr data-exp="Attribut login (cle primaire)">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> private string $login;</td>
+                            </tr>
+                            <tr data-exp="Mot de passe (hashe en production!)">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> private string $mdp;</td>
+                            </tr>
+                            <tr data-exp="Nom de l'utilisateur">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> private string $nom;</td>
+                            </tr>
+                            <tr data-exp="Prenom">
+                                <td class="line-num">6</td>
+                                <td class="line-code"> private string $prenom;</td>
+                            </tr>
+                            <tr data-exp="Email">
+                                <td class="line-num">7</td>
+                                <td class="line-code"> private string $email;</td>
+                            </tr>
+                            <tr data-exp="Getter dynamique">
+                                <td class="line-num">9</td>
+                                <td class="line-code"> public function get($attribut) {return $this-&gt;$attribut;}</td>
+                            </tr>
+                            <tr data-exp="Setter dynamique">
+                                <td class="line-num">10</td>
+                                <td class="line-code"> public function set($attribut, $valeur) {$this-&gt;$attribut =
+                                    $valeur;}</td>
+                            </tr>
+                            <tr data-exp="Constructeur avec 5 parametres optionnels">
+                                <td class="line-num">12</td>
+                                <td class="line-code"> public function __construct(string $l=NULL, string $m=NULL,
+                                    string $n=NULL, string $p=NULL, string $e=NULL) {</td>
+                            </tr>
+                            <tr data-exp="Verifie si login n'est pas null">
+                                <td class="line-num">13</td>
+                                <td class="line-code"> if(!is_null($l)) {</td>
+                            </tr>
+                            <tr data-exp="Initialise tous les attributs">
+                                <td class="line-num">14</td>
+                                <td class="line-code"> $this-&gt;login=$l; $this-&gt;mdp=$m; $this-&gt;nom=$n;
+                                    $this-&gt;prenom=$p; $this-&gt;email=$e;</td>
+                            </tr>
+                            <tr data-exp="Fermeture if">
+                                <td class="line-num">15</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture constructeur">
+                                <td class="line-num">16</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Methode d'affichage">
+                                <td class="line-num">18</td>
+                                <td class="line-code"> public function afficher() {</td>
+                            </tr>
+                            <tr data-exp="Retourne une chaine formatee">
+                                <td class="line-num">19</td>
+                                <td class="line-code"> return "utilisateur $this-&gt;login ($this-&gt;prenom
+                                    $this-&gt;nom), email = $this-&gt;email";</td>
+                            </tr>
+                            <tr data-exp="Fermeture afficher()">
+                                <td class="line-num">20</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Recupere tous les utilisateurs">
+                                <td class="line-num">22</td>
+                                <td class="line-code"> public static function getAllUtilisateur() {</td>
+                            </tr>
+                            <tr data-exp="Requete SELECT *">
+                                <td class="line-num">23</td>
+                                <td class="line-code"> $requete = "SELECT * FROM utilisateur;";</td>
+                            </tr>
+                            <tr data-exp="Execute via PDO">
+                                <td class="line-num">24</td>
+                                <td class="line-code"> $resultat = connexion::pdo()-&gt;query($requete);</td>
+                            </tr>
+                            <tr data-exp="Mode FETCH_CLASS">
+                                <td class="line-num">25</td>
+                                <td class="line-code"> $resultat-&gt;setFetchmode(PDO::FETCH_CLASS, "utilisateur");</td>
+                            </tr>
+                            <tr data-exp="Retourne le tableau">
+                                <td class="line-num">26</td>
+                                <td class="line-code"> return $resultat-&gt;fetchAll();</td>
+                            </tr>
+                            <tr data-exp="Fermeture">
+                                <td class="line-num">27</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Cherche un utilisateur par login">
+                                <td class="line-num">29</td>
+                                <td class="line-code"> public static function getUtilisateurByIdentifiant($i) {</td>
+                            </tr>
+                            <tr data-exp="Requete preparee">
+                                <td class="line-num">30</td>
+                                <td class="line-code"> $requete = "SELECT * FROM utilisateur WHERE login =
+                                    :identifiant;";</td>
+                            </tr>
+                            <tr data-exp="Prepare">
+                                <td class="line-num">31</td>
+                                <td class="line-code"> $resultat = connexion::pdo()-&gt;prepare($requete);</td>
+                            </tr>
+                            <tr data-exp="Valeurs">
+                                <td class="line-num">32</td>
+                                <td class="line-code"> $valeurs = array("identifiant" =&gt; $i);</td>
+                            </tr>
+                            <tr data-exp="Try">
+                                <td class="line-num">33</td>
+                                <td class="line-code"> try {</td>
+                            </tr>
+                            <tr data-exp="Execute">
+                                <td class="line-num">34</td>
+                                <td class="line-code"> $resultat-&gt;execute($valeurs);</td>
+                            </tr>
+                            <tr data-exp="FETCH_CLASS">
+                                <td class="line-num">35</td>
+                                <td class="line-code"> $resultat-&gt;setFetchmode(PDO::FETCH_CLASS, "utilisateur");</td>
+                            </tr>
+                            <tr data-exp="Retourne l'utilisateur ou false">
+                                <td class="line-num">36</td>
+                                <td class="line-code"> return $resultat-&gt;fetch();</td>
+                            </tr>
+                            <tr data-exp="Catch">
+                                <td class="line-num">37</td>
+                                <td class="line-code"> } catch (PDOException $e) {</td>
+                            </tr>
+                            <tr data-exp="Affiche erreur">
+                                <td class="line-num">38</td>
+                                <td class="line-code"> echo $e-&gt;getMessage();</td>
+                            </tr>
+                            <tr data-exp="Fermeture catch">
+                                <td class="line-num">39</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture fonction">
+                                <td class="line-num">40</td>
+                                <td class="line-code"> }</td>
+                            </tr>
+                            <tr data-exp="Fermeture classe">
+                                <td class="line-num">41</td>
+                                <td class="line-code">}</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">42</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VUES GENERALES -->
+            <div class="category">
+                <h2>Vues Generales</h2><span class="badge">Templates</span>
+            </div>
+
+            <div class="code-block" id="vue-d">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üñºÔ∏?/span> debut.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Declaration du type de document HTML5">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;!DOCTYPE html&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture balise html avec langue francaise">
+                                <td class="line-num">2</td>
+                                <td class="line-code">&lt;html lang="fr"&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture de la section head">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> &lt;head&gt;</td>
+                            </tr>
+                            <tr data-exp="Encodage UTF-8 pour les caracteres speciaux">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> &lt;meta charset="utf-8"&gt;</td>
+                            </tr>
+                            <tr data-exp="Titre dynamique via la variable $title du controleur">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> &lt;title&gt;&lt;?php echo $title;?&gt;&lt;/title&gt;</td>
+                            </tr>
+                            <tr data-exp="Lien vers le CSS du menu">
+                                <td class="line-num">6</td>
+                                <td class="line-code"> &lt;link rel="stylesheet" href="css/styleMenu.css"&gt;</td>
+                            </tr>
+                            <tr data-exp="Lien vers le CSS des boutons">
+                                <td class="line-num">7</td>
+                                <td class="line-code"> &lt;link rel="stylesheet" href="css/styleBoutons.css"&gt;</td>
+                            </tr>
+                            <tr data-exp="Lien vers le CSS du footer">
+                                <td class="line-num">8</td>
+                                <td class="line-code"> &lt;link rel="stylesheet" href="css/styleFooter.css"&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture head">
+                                <td class="line-num">9</td>
+                                <td class="line-code"> &lt;/head&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture body">
+                                <td class="line-num">10</td>
+                                <td class="line-code"> &lt;body&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="vue-f">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üñºÔ∏?/span> fin.html</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Fermeture de la balise body">
+                                <td class="line-num">1</td>
+                                <td class="line-code"> &lt;/body&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture du footer">
+                                <td class="line-num">2</td>
+                                <td class="line-code"> &lt;footer&gt;</td>
+                            </tr>
+                            <tr data-exp="Contenu du footer">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> La fin de la page.</td>
+                            </tr>
+                            <tr data-exp="Fermeture footer">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> &lt;/footer&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture html">
+                                <td class="line-num">5</td>
+                                <td class="line-code">&lt;/html&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="vue-m">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üñºÔ∏?/span> menu.html</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture header (en-tete de page)">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;header&gt;</td>
+                            </tr>
+                            <tr data-exp="Balise nav pour la navigation">
+                                <td class="line-num">2</td>
+                                <td class="line-code"> &lt;nav&gt;</td>
+                            </tr>
+                            <tr data-exp="Lien vers la liste des voitures via le routeur">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> &lt;a
+                                    href="routeur.php?controleur=controleurVoiture&amp;action=lireVoitures"&gt;liste des
+                                    voitures&lt;/a&gt;</td>
+                            </tr>
+                            <tr data-exp="Lien vers la liste des utilisateurs via le routeur">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> &lt;a
+                                    href="routeur.php?controleur=controleurUtilisateur&amp;action=lireUtilisateurs"&gt;liste
+                                    des utilisateurs&lt;/a&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture nav">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> &lt;/nav&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture header">
+                                <td class="line-num">6</td>
+                                <td class="line-code">&lt;/header&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VUES VOITURE -->
+            <div class="category">
+                <h2>Vues Voiture</h2><span class="badge">Affichage</span>
+            </div>
+
+            <div class="code-block" id="vv-l">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üöó</span> lesVoitures.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture balise main (contenu principal)">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;main&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">2</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Boucle foreach : parcourt chaque voiture du tableau $mesVoiture">
+                                <td class="line-num">3</td>
+                                <td class="line-code">foreach ($mesVoiture as $voiture) {</td>
+                            </tr>
+                            <tr data-exp="Recupere l'immatriculation de la voiture courante">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> $immat = $voiture-&gt;get("immatriculation");</td>
+                            </tr>
+                            <tr data-exp="Echo HTML avec lien vers les details de cette voiture">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> echo "&lt;p&gt; Voiture $immat &lt;a class='bouton'
+                                    href='routeur.php?controleur=controleurVoiture&amp;action=lireVoiture&amp;immatriculation=$immat'&gt;details&lt;/a&gt;&lt;/p&gt;";
+                                </td>
+                            </tr>
+                            <tr data-exp="Fermeture foreach">
+                                <td class="line-num">6</td>
+                                <td class="line-code">}</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">7</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture main">
+                                <td class="line-num">8</td>
+                                <td class="line-code">&lt;/main&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="vv-u">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üöó</span> uneVoiture.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture main">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;main&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">2</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Affiche le titre h2">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> echo "&lt;h2&gt;Details de la voiture&lt;/h2&gt;";</td>
+                            </tr>
+                            <tr data-exp="Appelle la methode afficher() de l'objet voiture $v">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> echo "&lt;p&gt;".$v-&gt;afficher()."&lt;/p&gt;";</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">5</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture main">
+                                <td class="line-num">6</td>
+                                <td class="line-code">&lt;/main&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="vv-e">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üöó</span> erreur.php (voiture)</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture main">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;main&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">2</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Message d'erreur general">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> echo "&lt;p&gt;Oups une erreur s'est produite :(&lt;/p&gt;";</td>
+                            </tr>
+                            <tr data-exp="Message specifique avec l'immatriculation cherchee">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> echo "&lt;p&gt;la voiture immatriculee ".$i." n'existe pas dans
+                                    la base !&lt;/p&gt;";</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">5</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture main">
+                                <td class="line-num">6</td>
+                                <td class="line-code">&lt;/main&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VUES UTILISATEUR -->
+            <div class="category">
+                <h2>Vues Utilisateur</h2><span class="badge">Affichage</span>
+            </div>
+
+            <div class="code-block" id="vu-l">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üë§</span> lesUtilisateurs.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture main">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;main&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">2</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Boucle foreach sur le tableau $mesUtilisateur">
+                                <td class="line-num">3</td>
+                                <td class="line-code">foreach($mesUtilisateur as $utilisateur) {</td>
+                            </tr>
+                            <tr data-exp="Recupere le login de l'utilisateur courant">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> $id = $utilisateur-&gt;get("login");</td>
+                            </tr>
+                            <tr data-exp="Echo HTML avec lien vers les details">
+                                <td class="line-num">5</td>
+                                <td class="line-code"> echo "&lt;p&gt; utilisateur $id &lt;a class='bouton'
+                                    href='routeur.php?controleur=controleurUtilisateur&amp;action=lireUtilisateur&amp;identifiant=$id'&gt;details&lt;/a&gt;&lt;/p&gt;";
+                                </td>
+                            </tr>
+                            <tr data-exp="Fermeture foreach">
+                                <td class="line-num">6</td>
+                                <td class="line-code">}</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">7</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture main">
+                                <td class="line-num">8</td>
+                                <td class="line-code">&lt;/main&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="vu-u">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üë§</span> unUtilisateur.php</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture main">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;main&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">2</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Affiche le titre">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> echo "&lt;h2&gt;Details de l'utilisateur&lt;/h2&gt;";</td>
+                            </tr>
+                            <tr data-exp="Appelle afficher() sur l'objet $u">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> echo "&lt;p&gt;".$u-&gt;afficher()."&lt;/p&gt;";</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">5</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture main">
+                                <td class="line-num">6</td>
+                                <td class="line-code">&lt;/main&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block" id="vu-e">
+                <div class="code-header" onclick="tog(this)">
+                    <h3><span class="file-icon">üë§</span> erreur.php (utilisateur)</h3>
+                    <span class="toggle">‚ñ?/span>
+                </div>
+                <div class="code-body">
+                    <div class="code-area">
+                        <table class="code-table">
+                            <tr data-exp="Ouverture main">
+                                <td class="line-num">1</td>
+                                <td class="line-code">&lt;main&gt;</td>
+                            </tr>
+                            <tr data-exp="Ouverture PHP">
+                                <td class="line-num">2</td>
+                                <td class="line-code">&lt;?php</td>
+                            </tr>
+                            <tr data-exp="Message d'erreur">
+                                <td class="line-num">3</td>
+                                <td class="line-code"> echo "&lt;p&gt;Oups une erreur s'est produite :(&lt;/p&gt;";</td>
+                            </tr>
+                            <tr data-exp="Message avec le login recherche">
+                                <td class="line-num">4</td>
+                                <td class="line-code"> echo "&lt;p&gt;l'utilisateur ".$i." n'existe pas dans la base
+                                    !&lt;/p&gt;";</td>
+                            </tr>
+                            <tr data-exp="Fermeture PHP">
+                                <td class="line-num">5</td>
+                                <td class="line-code">?&gt;</td>
+                            </tr>
+                            <tr data-exp="Fermeture main">
+                                <td class="line-num">6</td>
+                                <td class="line-code">&lt;/main&gt;</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="exp-panel">
+                        <h4><i class="lucide-book-open"></i>üìñ Explication</h4>
+                        <p>Cliquez sur une ligne.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>TP7 Ex6 - Architecture <span>MVC</span> PHP - Janvier 2026</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
