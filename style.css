@@ -1415,3 +1415,85 @@ footer span {
     display: flex !important;
   }
 }
+
+/*  PRINT: 2 PAGES ONLY - NO EXPLANATIONS  */
+@media print {
+  /* Hide explanations in print */
+  .exp-panel {
+    display: none !important;
+  }
+  
+  /* Remove inline explanations */
+  .code-table tr::after {
+    display: none !important;
+    content: none !important;
+  }
+  
+  /* 2 columns layout */
+  .container {
+    column-count: 2 !important;
+    column-gap: 8px !important;
+  }
+  
+  /* Ultra compact code */
+  .code-table {
+    font-size: 4.5pt !important;
+    line-height: 1.0 !important;
+  }
+  
+  .code-table td {
+    padding: 0 2px !important;
+  }
+  
+  .code-table .line-num {
+    width: 12px !important;
+    font-size: 3.5pt !important;
+    padding: 0 1px !important;
+  }
+  
+  /* Compact headers */
+  .code-header {
+    padding: 1px 4px !important;
+  }
+  
+  .code-header h3 {
+    font-size: 5pt !important;
+  }
+  
+  .code-header .file-icon {
+    width: 8px !important;
+    height: 8px !important;
+    display: none !important;
+  }
+  
+  /* Category headers compact */
+  .category {
+    margin: 5px 0 2px !important;
+    padding-bottom: 1px !important;
+  }
+  
+  .category h2 {
+    font-size: 6pt !important;
+  }
+  
+  .category .badge {
+    font-size: 4pt !important;
+    padding: 0 3px !important;
+  }
+  
+  /* Code block margins */
+  .code-block {
+    margin: 2px 0 !important;
+  }
+  
+  /* Main title smaller */
+  .main::before {
+    font-size: 10pt !important;
+    margin-bottom: 5px !important;
+  }
+  
+  /* Remove toggle */
+  .toggle {
+    display: none !important;
+  }
+}
